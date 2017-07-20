@@ -1,0 +1,10 @@
+//$env:NODE_ENV="production"
+{
+    "DemoRide": {
+        "dbConfig": {
+            "host": "localhost",
+             "port": 28015,
+            "dbName": "testDB",
+       				 }
+       			 }
+}

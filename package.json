@@ -1,0 +1,38 @@
+{
+  "name": "node-koa-socket-rethink",
+  "version": "1.0.0",
+  "description": "node js project using koa js and rethink db to use socket.io for displaying change in feed!!!!",
+  "main": "server.js",
+  "dependencies": {
+    "co-monk": "^1.0.0",
+    "marko": "^2.11.0",
+    "marko-layout": "^2.0.2",
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.13",
+    "monk": "^4.0.0",
+    "node-schedule": "^1.2.1",
+    "mqtt": "^2.3.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.0",
+    "socket.io": "^2.0.2",
+    "sync-request": "^4.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suhail339/koa-socket-reth.git"
+  },
+  "keywords": [
+    "socket"
+  ],
+  "author": "SMA",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/suhail339/koa-socket-reth/issues"
+  },
+  "homepage": "https://github.com/suhail339/koa-socket-reth#readme"
+}

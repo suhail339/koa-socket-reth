@@ -1,0 +1,111 @@
+<layout-use template="./shared/home/layout.marko" name="${data.Uname}" profileimage="${data.profileImage}">
+        <layout-put into="body">
+<table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Phonenumber</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                </tr>
+ <for each="user in data.userlist">
+<tr><td>$user.phoneNumber</td>
+<td>$user.firstName</td>
+<td>$user.lastName</td></tr>
+ </for>
+</tbody>
+</table>
+        </layout-put>
+
+
+<!--socket implementation-->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+            <script>
+
+               var VJLT = VJLT || {};
+              VJLT.isDesktopNotification  = false;
+
+              VJLT.notifyTest = function (msg) {
+                // Let's check if the browser supports notifications
+                if (!("Notification" in window)) {
+                  alert("This browser does not support desktop notification");
+                }
+
+                // Otherwise, we need to ask the user for permission
+                else if (Notification.permission !== "denied") {
+                  Notification.requestPermission(function (permission) {
+                    // If the user accepts, let's create a notification
+                    if (permission === "granted") {
+                      VJLT.isDesktopNotification = true;
+                      var notification = new Notification('desktop notifications enabled');
+                    }
+                  });
+                }
+                // At last, if the user has denied notifications, and you
+                // want to be respectful there is no need to bother them any more.
+              };
+              VJLT.notifyMe = function (msg) {
+                // Let's check whether notification permissions have already been granted
+                if (Notification.permission === "granted") {
+                  // If it's okay let's create a notification
+                  var notification = new Notification(msg, {
+                    icon: '',
+                  });
+                  console.log(notification);
+                }
+              };
+
+              VJLT.IO = function (){
+                var api = {};
+                var socketConfig = {
+                                      'reconnection': true,
+                                      'reconnectionDelay': 500,
+                                      'reconnectionAttempts': 10
+                                    };
+                var socket;
+                var lastJourneyID;
+                api.refresh =  function (){
+                    socket.emit("clientMsg", "hello from client:"+ socket.id);
+                    setTimeout(api.refresh, 50000);
+                };
+                api.init =  function (){
+                  socket = io('http://localhost:3000/', socketConfig);
+
+                  socket.on('connect', function(data){
+                    console.log("on connect", data);
+                    socket.on('users_count', function(data){
+                      console.log("Connection", data);
+                    });
+                  });
+
+                  socket.on('journey:created', function(msg){
+                    console.log("about to work plz :created");
+                    var pName, rideType;
+                    console.log(msg);
+                    if(msg.old_val !== null && msg.new_val === null){
+                      pName = msg.old_val.passenger.name;
+                      if(pName === undefined || pName === ''){
+                        pName = msg.old_val.passenger.userId;
+                      }
+
+                      rideType = msg.old_val.rideType;
+                      if (VJLT.isDesktopNotification && (lastJourneyID !== msg.old_val.id)) {
+                        VJLT.notifyMe(pName + " requested "+ rideType);
+                        lastJourneyID = msg.old_val.id;
+                      }
+                    }
+                  });
+                  setTimeout(this.refresh, 50000);
+
+
+                };
+
+                return api;
+              };
+              VJLT.notifyTest('Live journey Tracking on');
+              //VJLT.notifyMe('Live journey Tracking on');
+              VJLT.IO().init();
+            </script>
+
+<!--socket implementation-->
+
+    </layout-use>
